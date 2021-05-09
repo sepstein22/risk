@@ -168,39 +168,43 @@ class Board(object):
         Returns:
             [int]: a list of territory_ids representing the valid attack path; if no path exists, then it returns None instead
         """
-        path_inf = dict()
-        path_inf[source] = [source]
-        queue = heapdict.heapdict()
-        queue[source] = 0
-        visited = set()
-        visited.add(source)
-        
-        if self.owner(source) == self.owner(target):
+        if not self.can_attack(source, target):
             return None
 
-        while queue:
-            current, priority = queue.peekitem()
-            queue.pop(current)
-            if current == target: 
-                return path_inf[current]
-            for t in list(risk.definitions.territory_neighbors[current]):
-                if t in visited:
-                    pass
-                if self.owner(t) == self.owner(source):
-                    pass
-                else:
-                    temp_dict = copy.deepcopy(path_inf[current])
-                    temp_dict.append(t)
-                    path_rank = priority + self.armies(t)
-                    if t not in queue:
-                        path_inf[t] = temp_dict
-                        queue[t] = path_rank
-                    elif path_rank < queue[t]:
-                        path_inf[t] = temp_dict
-                        queue[t] = path_rank
-            visited.add(current)
-        return None
-                    
+        territories={}
+        territories[source]=[source]
+        pq = heapdict.heapdict()
+
+        pq[source]=0
+        visited=[source]
+        player_id=self.owner(source)
+
+        while pq:
+
+            (cur_ter, cur_ter_priority)=pq.popitem()
+            board_info = [country for country in self.neighbors(cur_ter) if (country not in visited and self.owner(country)!=player_id)]
+
+            for territory in board_info:
+
+                if territory == target:
+
+                    path=territories[cur_ter]
+                    path.append(territory)
+                    return path
+
+                copy_path = copy.deepcopy(territories[cur_ter])
+                copy_path.append(territory)
+                priority = self.armies(territory) + cur_ter_priority
+                if territory not in pq:
+                    territories[territory]=copy_path
+                    pq[territory]= cur_ter_priority+self.armies(territory)
+
+                elif priority <= pq[territory]:
+
+                    territories[territory] = copy_path
+                    pq[territory] = priority
+
+            visited.append(cur_ter) 
 
     def can_attack(self, source, target):
         """
