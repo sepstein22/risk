@@ -171,32 +171,32 @@ class Board(object):
         if self.owner(source) == self.owner(target):
             return None
 
-        path_info = dict()
-        path_info[source] = [source]
-        q = heapdict.heapdict()
-        q[source] = 0
-        visited_terrs = set()
-        visited_terrs.add(source)
+        path_inf = dict()
+        path_inf[source] = [source]
+        queue = heapdict.heapdict()
+        queue[source] = 0
+        visited = set()
+        visited.add(source)
 
-        while q:
-            current_terr, priority = q.peekitem()
-            q.pop(current_terr)
-            if current_terr == target:
-                return path_info[current_terr]
-            for terr in list(risk.definitions.territory_neighbors[current_terr]):
-                if terr in visited_terrs or self.owner(terr) == self.owner(source):
+        while queue:
+            current, priority = queue.peekitem()
+            queue.pop(current)
+            if current == target:
+                return path_inf[current]
+            for t in list(risk.definitions.territory_neighbors[current]):
+                if t in visited or self.owner(t) == self.owner(source):
                     pass
                 else:
-                    temp_dict = copy.deepcopy(path_info[current_terr])
-                    temp_dict.append(terr)
-                    path_priority = priority + self.armies(terr)
-                    if terr not in q:
-                        path_info[terr] = temp_dict
-                        q[terr] = path_priority
-                    elif path_priority < q[terr]:
-                        path_info[terr] = temp_dict
-                        q[terr] = path_priority
-            visited_terrs.add(current_terr)
+                    temp_dict = copy.deepcopy(path_inf[current])
+                    temp_dict.append(t)
+                    path_priority = priority + self.armies(t)
+                    if t not in queue:
+                        path_inf[t] = temp_dict
+                        queue[t] = path_priority
+                    elif path_priority < queue[t]:
+                        path_inf[t] = temp_dict
+                        queue[t] = path_priority
+            visited.add(current)
         return None
 
     def can_attack(self, source, target):
