@@ -168,32 +168,34 @@ class Board(object):
         Returns:
             [int]: a list of territory_ids representing the valid attack path; if no path exists, then it returns None instead
         """
-        path_steps = dict()
-        path_steps[source] = [source]
+        path_inf = dict()
+        path_inf[source] = [source]
         queue = heapdict.heapdict()
         queue[source] = 0
-        territories_visited = set()
-        territories_visited.add(source)
+        visited = set()
+        visited.add(source)
 
         while queue:
-            current_territory, priority = queue.peekitem()
-            queue.pop(current_territory)
-            if current_territory == target: 
-                return path_steps[current_territory]
-            for t in list(risk.definitions.territory_neighbors[current_territory]):
-                if t in territories_visited or self.owner(t) == self.owner(source):
+            current, priority = queue.peekitem()
+            queue.pop(current)
+            if current == target: 
+                return path_steps[current]
+            for t in list(risk.definitions.territory_neighbors[current]):
+                if t in visited:
+                    pass
+                if self.owner(t) == self.owner(source):
                     pass
                 else:
-                    deep_copy = copy.deepcopy(path_steps[current_territory])
-                    deep_copy.append(t)
+                    temp_dict = copy.deepcopy(path_inf[current])
+                    temp_dict.append(t)
                     path_rank = priority + self.armies(t)
                     if t not in queue:
-                        path_steps[t] = deep_copy
+                        path_inf[t] = temp_dict
                         queue[t] = path_rank
                     elif path_rank < queue[t]:
-                        path_steps[t] = deep_copy
+                        path_inf[t] = temp_dict
                         queue[t] = path_rank
-            territories_visited.add(current_territory)
+            visited.add(current)
         return None
                     
 
