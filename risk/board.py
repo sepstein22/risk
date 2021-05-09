@@ -175,7 +175,7 @@ class Board(object):
         visited = set()
         visited.add(source)
         
-        if self.owner(source) == self.owner(target)
+        if self.owner(source) == self.owner(target):
             return None
 
         while queue:
