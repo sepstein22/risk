@@ -133,47 +133,44 @@ class Board(object):
                         queue.append(t)
             visited.add(current)
     
-    def _fortify(self, source, target):
+    def can_fortify(self, source, target):
         
-        start = []
-        start.append(source)
+        path_inf = dict()
+        path_inf[source] = [source]
         queue = deque([])
-        queue.append(start)
+        queue.append(source)
+        visited = set()
+        visited.add(source)
 
         board = risk.definitions.territory_names
         board = list(board.keys())
 
-        if source == target: 
-            return start
-
         while queue: 
             current = queue.popleft()
-            player = self.owner(current[-1])
-            adj = self.neighbors(current[-1])
-            neighbor = [country for country in adj if self.owner(country)==player]
-            board_info = [territory for territory in board if territory in neighbor]
-            for territory in board_info:
-                if territory == target:
-                    current.append(territory)
-                    return current
-
-                copy_start = copy.deepcopy(current)
-                copy_start.append(territory)
-                queue.append(copy_start)
-                board.remove(territory)
-
-    def can_fortify(self, source, target):
-        '''
-        Returns:
-            bool: True if reinforcing the target from the source territory is a valid move
-        '''
-        if self._fortify(source, target) == None: 
-            return False
-        return True
-
+            if current == target: 
+                return True
+            board_info = list(risk.definitions.territory_neighbors[current])
+            for t in board_info: 
+                if t in visited: 
+                    pass
+                if self.owner(t) != self.owner(source): 
+                    pass
+                else: 
+                    temp_dict = copy.deepcopy(path_inf[t])
+                    temp_dict.append(t)
+                    if t in path_inf: 
+                        if len(temp_dict) < len(path_inf[t]):
+                            path_inf[t] = temp_dict
+                            queue.append(t)
+                    else: 
+                        path_inf[t] = temp_dict
+                        queue.append(t)
+            visited.add(current)
+        return False
+    
     def cheapest_attack_path(self, source, target):
-        '''
-        Returns:
+         '''
+    Returns:
             [int]: a list of territory_ids representing the valid attack path; if no path exists, then it returns None instead
         '''
         path_steps = dict()
