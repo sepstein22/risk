@@ -129,14 +129,14 @@ class Board(object):
                             path_inf[t] = temp_dict
                             queue.append(t)
                     else:
-                        path_info[t] = temp_dict
+                        path_inf[t] = temp_dict
                         queue.append(t)
             visited.add(current)
     
     def _fortify(self, source, target):
         
         start = []
-        ic.append(source)
+        start.append(source)
         queue = deque([])
         queue.append(start)
 
