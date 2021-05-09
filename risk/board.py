@@ -134,7 +134,6 @@ class Board(object):
             visited.add(current)
     
     def can_fortify(self, source, target):
-        
         path_inf = dict()
         path_inf[source] = [source]
         queue = deque([])
@@ -142,27 +141,23 @@ class Board(object):
         visited = set()
         visited.add(source)
 
-        board = risk.definitions.territory_names
-        board = list(board.keys())
-
-        while queue: 
+        while queue:
             current = queue.popleft()
-            if current == target: 
+            if current == target:
                 return True
-            board_info = list(risk.definitions.territory_neighbors[current])
-            for t in board_info: 
+            for t in list(risk.definitions.territory_neighbors[current]):
                 if t in visited: 
                     pass
-                if self.owner(t) != self.owner(source): 
-                    pass
-                else: 
-                    temp_dict = copy.deepcopy(path_inf[t])
+                if self.owner(t) != self.owner(source):
+                    pass 
+                else:
+                    temp_dict = copy.deepcopy(path_inf[current])
                     temp_dict.append(t)
-                    if t in path_inf: 
+                    if t in path_inf:
                         if len(temp_dict) < len(path_inf[t]):
                             path_inf[t] = temp_dict
                             queue.append(t)
-                    else: 
+                    else:
                         path_inf[t] = temp_dict
                         queue.append(t)
             visited.add(current)
