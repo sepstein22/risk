@@ -174,12 +174,15 @@ class Board(object):
         queue[source] = 0
         visited = set()
         visited.add(source)
+        
+        if self.owner(source) == self.owner(target)
+            return None
 
         while queue:
             current, priority = queue.peekitem()
             queue.pop(current)
             if current == target: 
-                return path_steps[current]
+                return path_inf[current]
             for t in list(risk.definitions.territory_neighbors[current]):
                 if t in visited:
                     pass
