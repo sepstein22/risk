@@ -59,11 +59,12 @@ class Board(object):
         '''
         if len(path) == 1 or len(path) == 0:
             return True
-        elif len(path) != np.unique(np.array(path)): 
+        if len(path) != len(np.unique(np.array(path))): 
             return False
         else:
-            for i in range(len(path)-1): 
-                if path[i+1] not in risk.definitions.territory_nighbors[path(i)]:
+            for territory, neighbor in list(zip(path,path[1:])):
+                neighbors = risk.definitions.territory_neighbors[territory]
+                if neighbor not in neighbors:
                     return False
             return True
 
