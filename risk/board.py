@@ -110,7 +110,7 @@ class Board(object):
 
         while queue: 
             current = queue.popleft()
-            if current = target: 
+            if current == target: 
                 return short[current]
             neighbors = risk.definition.territory_neighbors[current]
             for territory in neighbors: 
