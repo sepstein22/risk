@@ -169,10 +169,10 @@ class Board(object):
         return False
     
     def cheapest_attack_path(self, source, target):
-         '''
-    Returns:
+        """
+        Returns:
             [int]: a list of territory_ids representing the valid attack path; if no path exists, then it returns None instead
-        '''
+        """
         path_steps = dict()
         path_steps[source] = [source]
         queue = heapdict.heapdict()
@@ -203,9 +203,9 @@ class Board(object):
                     
 
     def can_attack(self, source, target):
-        '''
+        """
             bool: True if a valid attack path exists between source and target; else False
-        '''
+        """
         if self.cheapest_attack_path(source, target): 
             return True
         else: 
