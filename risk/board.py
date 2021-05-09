@@ -107,30 +107,32 @@ class Board(object):
             target (int): a territory_id that is the target location
 
         '''
-        start = []
-        start.append(source)
+        path_inf = dict()
+        path_inf[source] = [source]
         queue = deque([])
-        queue.append(start)
-        
-        board_setup = risk.definitions.territory_names
-        board_setup = list(board.keys())
+        queue.append(source)
+        visited = set()
+        visited.add(source)
 
-        if source == territory: 
-            return start
-        
-        while queue: 
+        while queue:
             current = queue.popleft()
-
-            board_inf = [territory for territory in board if territory in self.neighbors(current[-1])]
-            for territory in board_inf: 
-                if territory == target: 
-                    current.append(territory)
-                    return current
-                copy_init = copy.deepcopy(current)
-                copy_init.append(territory)
-                queue.append(copy_init)
-                board_setup.remove(territory)
-
+            if current == target:
+                return path_inf[current]
+            for t in list(risk.definitions.territory_neighbors[current]):
+                if t in visited:
+                    pass
+                else:
+                    temp_dict = copy.deepcopy(path_inf[current])
+                    temp_dict.append(t)
+                    if t in path_inf:
+                        if len(temp_dict) < len(path_inf[t]):
+                            path_inf[t] = temp_dict
+                            queue.append(t)
+                    else:
+                        path_info[t] = temp_dict
+                        queue.append(t)
+            visited.add(current)
+    
     def _fortify(self, source, target):
         
         start = []
