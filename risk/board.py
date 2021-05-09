@@ -2,9 +2,11 @@ import os
 import random
 from collections import namedtuple
 from collections import deque
+
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.path import Path
+
 from queue import PriorityQueue
 import heapdict
 import copy
@@ -59,12 +61,15 @@ class Board(object):
         '''
         if len(path) == 1 or len(path) == 0:
             return True
-        if len(path) != len(np.unique(np.array(path))): 
+        elif len(path) != len(set(path)):
             return False
+
         else:
-            for territory, neighbor in list(zip(path,path[1:])):
-                neighbors = risk.definitions.territory_neighbors[territory]
-                if neighbor not in neighbors:
+            for i in range(len(path)-1):
+                territory = path[i]
+                new_territory = path[i+1]
+                neighbour = risk.definitions.territory_neighbors[territory]
+                if new_territory not in neighbour:
                     return False
             return True
 
@@ -79,8 +84,9 @@ class Board(object):
         elif self.is_valid_path(path) is False: 
             return False
         else:
-            for territory in path: 
-                if territory != path[0] and self.owner(territory) == self.owner(path[0]):
+            id = self.owner(path[0])
+            for place in path:
+                if path[0] != place and self.owner(place) == id:
                     return False
             return True
 
